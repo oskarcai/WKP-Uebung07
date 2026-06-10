@@ -14,7 +14,8 @@ public class Demo {
 
     public static void main(String[] args) {
         List <String> list = ShoppingList.createList("Milch", "Mehl", "Butter", "Zucker");
-        list.add("toast");
+        // list.add("toast");
+        // -> Fehler zur Laufzeit, da list immutable (kein Compilerfehler denn syntaktisch/typbezogen passt alles)
 
         for (String article : list) {
             System.out.print("[");
