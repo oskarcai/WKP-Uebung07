@@ -11,8 +11,10 @@ public class GamePiece {
     }
 
     public void nextStage() {
-        if (stage != MutationStage.HUGE) {
-            stage = MutationStage.values()[stage.ordinal() + 1];
+        MutationStage[] values = MutationStage.values();
+        int ordinal = stage.ordinal();
+        if(ordinal < values.length - 1) {
+            stage = values[ordinal + 1];
         }
     }
 
