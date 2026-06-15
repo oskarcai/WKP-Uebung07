@@ -5,7 +5,7 @@ public abstract class PFood extends Food {
     int amount; // Anzahl
 
     public PFood(int popularity) {
-        popular = true;
+        super.popular = true;
         this.popularity = popularity;
     }
 
