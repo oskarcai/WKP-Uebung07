@@ -33,5 +33,22 @@ public class A4_Main {
                     - ob equals() true zurückgibt
                     nur wenn hashCode() gleich und equals() true ist, erkennt HashSet Duplikate korrekt
          */
+
+
+
+
+
+        HashSet <Visitor> visitorSet = new HashSet<>();
+        visitorSet.add(new Visitor(1, "Anna"));
+        visitorSet.add(new Visitor(1, "Anna"));
+        visitorSet.add(new Visitor(2, "Ben"));
+        visitorSet.add(new Visitor(3, "Clara"));
+
+        System.out.println("HashSet für Visitors hat die Größe: " + visitorSet.size());
+
+        // Ausgabe
+        for (Visitor visitor : visitorSet) {
+            System.out.println(visitor);
+        }
     }
 }
