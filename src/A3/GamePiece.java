@@ -35,4 +35,14 @@ public class GamePiece {
             return b;
         }
     }
+
+    public static GamePiece mostMutuated(GamePiece... gamePieces) {
+        GamePiece mostAdvancedPiece = gamePieces[0];
+
+        for(int i = 1; i < gamePieces.length; i++) {
+            mostAdvancedPiece = GamePiece.moreMutuated(mostAdvancedPiece, gamePieces[i]);
+        }
+
+        return mostAdvancedPiece;
+    }
 }
