@@ -1,0 +1,142 @@
+In der Vorlesung haben Sie den equals-Kontrakt kennengelernt. Eine korrekt implementierte
+equals-Methode muss insbesondere die Eigenschaften Reflexivität, Symmetrie, Transitivität,
+Konsistenz sowie den korrekten Umgang mit null erfüllen.
+Untersuchen Sie die folgenden Implementierungen von equals. Geben Sie jeweils an, welche
+Eigenschaft(en) des equals-Kontrakts verletzt werden. Falls keine Eigenschaft verletzt wird,
+liefern Sie eine entsprechende Begründung.
+
+-> equals-Kontrakt:
+- Reflexivität: a.equals(a) → immer true
+- Symmetrie: a.equals(b) → dann auch b.equals(a)
+- Transitivität: a.equals(b) und b.equals(c) → dann a.equals(c)
+- Konsistenz: mehrfacher Aufruf → immer gleiche Antwort
+- Nullsicherheit: a.equals(null) → immer false
+
+// wir nehmen für alle Aufgaben an, dass a eine Referenz auf ein beliebiges Objekt != null ist
+
+(a) @Override
+    public boolean equals(Object obj) {
+        return false;
+    }
+- Reflexivität -> nicht erfüllt, denn a.equals(a) != true
+- Symmetrie -> erfüllt, denn (a.equals(b)) == false == (b.equals(a))
+- Transitivität -> erfüllt denn (a.equals(b) && b.equals(c)) => a.equals(c)
+- Konsistenz -> sowieso erfüllt
+- Nullsicherheit -> erfüllt, denn a.equals(null) == false
+
+
+(b) @Override
+    public boolean equals(Object obj) {
+        return true;
+    }
+- Reflexivität -> erfüllt, denn a.equals(a) == true
+- Symmetrie -> erfüllt, denn (a.equals(b)) == true == (b.equals(a))
+- Transitivität -> erfüllt denn (a.equals(b) && b.equals(c)) => a.equals(c)
+- Konsistenz -> sowieso erfüllt
+- Nullsicherheit -> nicht erfüllt, denn a.equals(null) != false
+
+(c) @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return true;
+        return false;
+    }
+- Reflexivität -> nicht erfüllt, denn a.equals(a) != true
+- Symmetrie -> erfüllt, denn (a.equals(b)) == false == (b.equals(a))
+- Transitivität -> erfüllt denn (a.equals(b) && b.equals(c)) => a.equals(c) (denn Prämisse ist falsch -> Aussagenlogik)
+- Konsistenz -> sowieso erfüllt
+- Nullsicherheit -> nicht erfüllt, denn a.equals(null) != false
+
+(d) @Override
+    public boolean equals(Object obj) {
+        return this.hashCode() == obj.hashCode();
+    }
+- Reflexivität -> erfüllt, denn a.equals(a) == true (da a ein und dasselbe Objekt ist bzw. die Referenz auf ein und dasselbe Objekt, somit hat es den gleichen hashCode)
+- Symmetrie -> erfüllt, denn (a.equals(b)) == false == (b.equals(a))
+- Transitivität -> erfüllt denn (a.equals(b) && b.equals(c)) => a.equals(c) (denn Prämisse ist falsch -> Aussagenlogik)
+- Konsistenz -> sowieso erfüllt
+- Nullsicherheit -> nicht erfüllt, denn a.equals(null) != false (-> Nullpointer-Exception, denn obj == null)
+
+(e) Gegeben seien die Klassen:
+    public class Person {
+        int id;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Person)) return false;
+            Person p = (Person) obj;
+            return id == p.id;
+        }
+    }
+
+    public class Employee extends Person {  // Die Klasse Employee überschreibt equals nicht.
+        String department;
+    }
+- Reflexivität -> erfüllt, denn a.equals(a) == true
+- Symmetrie -> erfüllt, denn (a.equals(b)) == (b.equals(a))
+- Transitivität -> erfüllt denn (a.equals(b) && b.equals(c)) => a.equals(c)
+- Konsistenz -> sowieso erfüllt
+- Nullsicherheit -> erfüllt, denn a.equals(null) == false (null instanceof Person == false)
+
+(f) Gegeben seien die Klassen:
+    public class Person {
+        int id;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Person)) return false;
+            Person p = (Person) obj;
+            return id == p.id;
+        }
+    }
+
+    public class Employee extends Person {  // Die Klasse Employee überschreibt equals.
+        String department;
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Employee)) return false;
+            Employee e = (Employee) obj;
+            return id == e.id;
+        }
+    }
+- Reflexivität -> erfüllt, denn a.equals(a) == true
+- Symmetrie -> nicht erfüllt, denn (a.equals(b)) == false != true == (b.equals(a))  (z.B. wenn a ein Employee-Objekt ist & b ein Person-Objekt)
+- Transitivität -> erfüllt denn (a.equals(b) && b.equals(c)) => a.equals(c)
+- Konsistenz -> sowieso erfüllt
+- Nullsicherheit -> erfüllt, denn a.equals(null) == false (null instanceof Person == false und null instanceof Employee == false)
+
+Betrachten Sie folgenden Programmteil:
+
+    Person p = new Person();
+    p.id = 1;
+
+    Employee e = new Employee();
+    e.id = 1;
+
+    System.out.println(p.equals(e));
+    System.out.println(e.equals(p));
+
+Welche Ausgabe entsteht? Welche Eigenschaft des equals-Kontrakts wird verletzt?
+-> Ausgabe: true ; false --> Symmetrie wird verletzt, denn p.equals(e) != e.equals(p)
+
+(g) Gegeben seien drei Objekte:
+
+    Person p1 = new Person(1);
+    Employee e1 = new Employee(1, “IT”);
+    Employee e2 = new Employee(1, “HR”);
+
+Angenommen, die Klasse Person vergleicht nur die id, während die Klasse Employee
+sowohl id als auch department vergleicht.
+Kann dadurch die Eigenschaft der Transitivität verletzt werden? Begründen Sie Ihre
+Antwort anhand der drei Objekte.
+
+Beispiele:
+- p1.equals(e1) == true && e1.equals(e2) == false -> Prämisse falsch, daher Implikation wahr -> Transitivität erfüllt
+- p1.equals(e2) == true && e2.equals(e1) == false -> Prämisse falsch, daher Implikation wahr -> Transitivität erfüllt
+- e1.equals(p1) == false -> Prämisse falsch, daher Implikation wahr -> Transitivität erfüllt
+- e1.equals(e2) == false -> Prämisse falsch, daher Implikation wahr -> Transitivität erfüllt
+- e2.equals(p1) == false -> Prämisse falsch, daher Implikation wahr -> Transitivität erfüllt
+- e2.equals(e1) == false -> Prämisse falsch, daher Implikation wahr -> Transitivität erfüllt
+--> Es gilt immer noch stets die Transitivität, denn besagte Ausgangssituation (s.o.) sorgt dafür,
+    dass die Prämissen immer falsch sind, somit die Implikation immer wahr sein muss,
+    woraus die Erfüllung der Transitivität im Allgemeinen (a.equals(b) && b.equals(c) => a.equals(c)) gilt.
